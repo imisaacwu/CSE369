@@ -1,0 +1,225 @@
+\documentclass{article}
+
+% For adjusting images
+\usepackage{adjustbox}
+% For functions like \binom
+\usepackage{amsmath}
+% For functions like \wedge \subseteq \mathbb
+\usepackage{amssymb}
+% 312 Font
+\usepackage{charter}
+% Circuit diagrams
+\usepackage{circuitikz}
+% Custom lists
+\usepackage{enumitem}
+% Page margins & pagestyles
+\usepackage{fullpage}
+% Font encoding
+\usepackage[T1]{fontenc}
+% Colored boxes around the 'solution' environment
+\usepackage{mdframed}
+% Used for making Karnaugh Maps
+\usepackage{tikz}
+\usetikzlibrary{matrix,calc}
+% For color
+\usepackage[dvipsnames]{xcolor}
+
+% Defines a solution environment that creates a green box around text inside.
+\mdfdefinestyle{SolutionFrame}{linecolor=green!60!black,linewidth=1pt}
+\newenvironment{solution}{\begin{mdframed}[style=SolutionFrame]}{\end{mdframed}}
+
+% Enumerate with (a),(b),(c),...
+\newenvironment{enum}{\begin{enumerate}[label={(\alph*)}]}{\end{enumerate}}
+
+% Put a dot after section titles
+\renewcommand\thesection{\arabic{section}.}
+\renewcommand\thesubsection{\arabic{section}.\arabic{subsection}}
+
+% Hide the Date
+\date{}
+% Hide page numbers
+\pagenumbering{gobble}
+
+\begin{document}
+    % Used for making Karnaugh Maps
+    \include{kmaps}
+
+    \begin{titlepage}
+        \centering
+        \null
+        \vspace{5cm}
+        {\Huge CSE 369 Lab 3\par}
+        \vspace{0.5cm}
+        {\Large Digital Design using FPGAs \par}
+        \vfill
+        {\hfill \Large Isaac Wu \par}
+        {\hfill \large 2360957 \par}
+        {\hfill \large \today \par}
+    \end{titlepage}
+
+\section{Karnaugh Maps}
+    \begin{enum}
+        \item Discounted
+            \begin{solution}
+                \begin{center}
+                    \begin{tabular}{c|c|c|c||c}
+                        U & P & C & Mark & Discounted \\ \hline
+                        0 & 0 & 0 & 0 & 0 \\ \hline
+                        0 & 0 & 0 & 1 & 0 \\ \hline
+                        0 & 0 & 1 & 0 & 0 \\ \hline
+                        0 & 0 & 1 & 1 & 0 \\ \hline
+                        0 & 1 & 0 & 0 & X \\ \hline
+                        0 & 1 & 0 & 1 & X \\ \hline
+                        0 & 1 & 1 & 0 & 1 \\ \hline
+                        0 & 1 & 1 & 1 & 1 \\ \hline
+                        1 & 0 & 0 & 0 & 0 \\ \hline
+                        1 & 0 & 0 & 1 & 0 \\ \hline
+                        1 & 0 & 1 & 0 & 1 \\ \hline
+                        1 & 0 & 1 & 1 & 1 \\ \hline
+                        1 & 1 & 0 & 0 & 1 \\ \hline
+                        1 & 1 & 0 & 1 & 1 \\ \hline
+                        1 & 1 & 1 & 0 & X \\ \hline
+                        1 & 1 & 1 & 1 & X \\ \hline
+                    \end{tabular}
+                    \vfill
+                    
+                    \begin{Karnaugh4}{U}{P}{C}{M}
+                        \ones{0110,0111,1010,1011,1100,1101}
+                        \zeroes{0000,0001,0010,0011,1000,1001}
+                        \exes{0100,0101,1110,1111}
+
+                        \internal{0100}{1110}{blue}
+                        \internal{1111}{1010}{green}
+                    \end{Karnaugh4}
+                    $$\text{Discounted}=\textcolor{blue}{\mathbf{P}}+\textcolor{ForestGreen}{\mathbf{UC}}$$
+                \end{center}
+            \end{solution}
+
+        \newpage
+        \item Stolen
+            \begin{solution}
+                \begin{center}
+                    \begin{tabular}{c|c|c|c||c}
+                        U & P & C & Mark & Stolen \\ \hline
+                        0 & 0 & 0 & 0 & 1 \\ \hline
+                        0 & 0 & 0 & 1 & 0 \\ \hline
+                        0 & 0 & 1 & 0 & 0 \\ \hline
+                        0 & 0 & 1 & 1 & X \\ \hline
+                        0 & 1 & 0 & 0 & X \\ \hline
+                        0 & 1 & 0 & 1 & X \\ \hline
+                        0 & 1 & 1 & 0 & 0 \\ \hline
+                        0 & 1 & 1 & 1 & X \\ \hline
+                        1 & 0 & 0 & 0 & 1 \\ \hline
+                        1 & 0 & 0 & 1 & 0 \\ \hline
+                        1 & 0 & 1 & 0 & 1 \\ \hline
+                        1 & 0 & 1 & 1 & 0 \\ \hline
+                        1 & 1 & 0 & 0 & 0 \\ \hline
+                        1 & 1 & 0 & 1 & X \\ \hline
+                        1 & 1 & 1 & 0 & X \\ \hline
+                        1 & 1 & 1 & 1 & X \\ \hline
+                    \end{tabular}
+                    \vfill
+                    
+                    \begin{Karnaugh4}{U}{P}{C}{M}
+                        \ones{0000,1000,1010}
+                        \zeroes{0001,0010,0110,1001,1011,1100}
+                        \exes{0011,0100,0101,0111,1101,1110,1111}
+
+                        \internal{0000}{0100}{blue}
+                        \vertical{1000}{1010}{green}
+                    \end{Karnaugh4}
+                    $$\text{Stolen}=\textcolor{blue}{\mathbf{\overline{U}\,\overline{C}\,\overline{M}}}+\textcolor{ForestGreen}{\mathbf{U\,\overline{P}\,\overline{M}}}$$
+                \end{center}
+            \end{solution}
+    \end{enum}
+
+\newpage
+\section{Circuit Diagrams}
+    \begin{enum}
+        \item Discounted
+            \begin{solution}
+                \begin{center}
+                    \begin{circuitikz}  \draw
+                        (0,3) node (u) {U}
+                        (0,2) node (p) {P}
+                        (0,1) node (c) {C}
+                        (0,0) node (m) {Mark}
+                        (5,0) node (eq) {\boxed{P+UC}}
+                        (6.5,2.28) node (out) {Discounted}
+
+                        (3,2.75) node[and port] (and) {\hspace{-0.4em} AND}
+                        (5,2.28) node[or port] (or) {OR}
+
+                        (u) -- (and.in 1)
+                        (c) -| (and.in 2)
+                        
+                        (and.out) |- (or.in 1)
+                        (p) to[xing] ++(3.22,0) -- (or.in 2)
+                        
+                        (or.out) -- (out)
+                        ;
+                    \end{circuitikz}
+                \end{center}
+            \end{solution}
+
+        \item Stolen
+            \begin{solution}
+                \begin{center}
+                    \begin{circuitikz}  \draw
+                        (0,4) node (u) {U}
+                        (1.5,4) node[not port, scale=0.6] (not_u) {\hspace{-0.4em}\footnotesize NOT}
+                        (0,2) node (p) {P}
+                        (0,1) node (c) {C}
+                        (0,0) node (m) {Mark}
+                        (6.5,0) node (eq) {\boxed{\overline{U}\,\overline{C}\,\overline{M}+U\,\overline{P}\,\overline{M}\rightarrow\overline{(U+C+M)(\overline{U}+P+M)}}}
+                        (6.5,2) node (out) {Stolen}
+
+                        (4,3) node[or port, number inputs=3] (or_ucm) {OR}
+                        (4,1) node[or port, number inputs=3] (or_upm) {OR}
+                        (5.6,2) node[nand port] (nand) {\hspace{-0.4em}\footnotesize NAND}
+
+                        (u) -- ++(.5,0) node[circle, draw, fill, scale=.25] (dot) {} -- (not_u)
+
+                        (u) -- ++(0.5,0) |- (2.4,3.38) to[xing] (or_ucm.in 1)
+                        (c) -- ++(0.75,0) -- ++(0,.75) to[xing] ++(0,.5) |- (2.4,3) to[xing] (or_ucm.in 2)
+                        (m) -- ++(1,0) -- ++(0,1.75) to[xing] ++ (0,.5) |- (2.4,2.62) to[xing] (or_ucm.in 3)
+                        (not_u.out) -- ++(.59,0) |- (or_upm.in 1)
+                        (p) -- ++(2,0) |- (or_upm.in 2)
+                        (m) -- ++(1,0) node[circle, draw, fill, scale=.25] (dot) {} -- ++(1.5,0) |- (or_upm.in 3)
+
+                        (or_ucm.out) |- (nand.in 1)
+                        (or_upm.out) |- (nand.in 2)
+
+                        (nand.out) -- (out)
+                        ;
+                    \end{circuitikz}
+                \end{center}
+            \end{solution}
+    \end{enum}
+
+% \newpage
+\clearpage
+\section{ModelSim Simulation}
+    \begin{solution}
+        Here is the code for my recognizer circuit. I defined logic variables for U, P, C, and Mark to make it easier to translate the inputs. Then, using the logic calculated using the Karnaugh Maps above, I assigned values to Discounted and Stolen, two logic variables defined above. Then, I assigned the values of Discounted and Stolen to two LEDs to display the output of the calculation. \\
+        \begin{minipage}[t]{0.9\linewidth}
+            \includegraphics[width=0.9\linewidth]{Lab3/code.png}
+        \end{minipage} \\
+        This is the code for my test benchmark used to ensure correct functionality from my circuit. This code will run my lab3 module with all 16 combinations of switch inputs. \\
+        \begin{minipage}[t]{0.9\linewidth}
+            \includegraphics[width=0.9\linewidth]{Lab3/test_bench.png}
+        \end{minipage}
+        \newpage
+        This is what my wave diagram looks like. The top 4 waves show the 4 switches alternating to test all 16 combinations. The bottom two waves are the LED output, with LEDR[0] corresponding to if a product is Discounted, and LEDR[1] if a product was stolen. \\
+        \begin{minipage}[t]{0.9\linewidth}
+            \includegraphics[width=0.9\linewidth]{Lab3/waves.png}
+        \end{minipage}
+    \end{solution}
+
+\section{Misc.}
+    How many hours (estimated) it took to complete this lab in total, including reading, planning, designing, coding, debugging, and testing.
+    \begin{solution}
+        It took around 7 hours to complete this lab.
+    \end{solution}
+
+\end{document}

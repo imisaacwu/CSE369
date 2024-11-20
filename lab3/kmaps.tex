@@ -1,0 +1,182 @@
+% \documentclass{standalone}
+
+% \usepackage{tikz}
+% \usetikzlibrary{matrix,calc}
+
+\newcommand{\p}{\phantom{0}}
+\newcommand{\pp}{\phantom{00}}
+
+% Isolated term
+%#1 - Optional. Space between node and grouping line. Default=0
+%#2 - Node
+%#3 - Fill color
+\newcommand{\isolated}[3][0] {
+    \draw [rounded corners=3pt, fill=#3, opacity=0.3]
+    ($(#2.north west)+(135:#1)$) rectangle ($(#2.south east)+(-45:#1)$);
+}
+
+% Internal group
+%#1 - Optional. Space between node and grouping line. Default=0
+%#2 - Top left node
+%#3 - Bottom right node
+%#4 - Fill color
+\newcommand{\internal}[4][0] {
+    \draw [rounded corners=3pt, fill=#4, opacity=0.3]
+    ($(#2.north west)+(135:#1)$) rectangle ($(#3.south east)+(-45:#1)$);
+}
+
+% Horizontal border group
+%#1 - Optional. Space between node and grouping line. Default=0
+%#2 - Top left node
+%#3 - Bottom right node
+%#4 - Fill color
+\newcommand{\horizontal}[4][0] {
+    \draw [rounded corners=3pt, fill=#4, opacity=0.3]
+    ($(rf.east |- #2.north)+(90:#1)$) -| ($(#2.east)+(0:#1)$) |- ($(rf.east |- #3.south)+(-90:#1)$)
+    ($(cf.west |- #2.north)+(90:#1)$) -| ($(#3.west)+(180:#1)$) |- ($(cf.west |- #3.south)+(-90:#1)$);
+}
+
+% Vertical border group
+%#1 - Optional. Space between node and grouping line. Default=0
+%#2 - Top left node
+%#3 - Bottom right node
+%#4 - Fill color
+\newcommand{\vertical}[4][0] {
+    \draw [rounded corners=3pt, fill=#4, opacity=0.3]
+    ($(cf.south -| #2.west)+(180:#1)$) |- ($(#2.south)+(-90:#1)$) -| ($(cf.south -| #3.east)+(0:#1)$)
+    ($(rf.north -| #2.west)+(180:#1)$) |- ($(#3.north)+(90:#1)$) -| ($(rf.north -| #3.east)+(0:#1)$);
+}
+
+% Corners group (Only used in 4x4s)
+%#1 - Optional. Space between node and grouping line. Default=0
+%#2 - Fill color
+\newcommand{\corners}[2][0] {
+    \draw [rounded corners=3pt, opacity=.3]
+    ($(rf.east |- 0000.south)+(-90:#1)$) -| ($(0000.east |- cf.south)+(0:#1)$)
+    ($(rf.east |- 0010.north)+(90:#1)$) -| ($(0010.east |- rf.north)+(0:#1)$)
+    ($(cf.west |- 1000.south)+(-90:#1)$) -| ($(1000.west |- cf.south)+(180:#1)$)
+    ($(cf.west |- 1010.north)+(90:#1)$) -| ($(1010.west |- rf.north)+(180:#1)$);
+    
+    \fill [rounded corners=3pt, fill=#2, opacity=.3]
+    ($(rf.east |- 0000.south)+(-90:#1)$) -|  ($(0000.east |- cf.south)+(0:#1)$) [sharp corners] ($(rf.east |- 0000.south)+(-90:#1)$) |-  ($(0000.east |- cf.south)+(0:#1)$)
+    
+    ($(rf.east |- 0010.north)+(90:#1)$) -| ($(0010.east |- rf.north)+(0:#1)$) [sharp corners] ($(rf.east |- 0010.north)+(90:#1)$) |- ($(0010.east |- rf.north)+(0:#1)$)
+    
+    ($(cf.west |- 1000.south)+(-90:#1)$) -| ($(1000.west |- cf.south)+(180:#1)$) [sharp corners]($(cf.west |- 1000.south)+(-90:#1)$) |- ($(1000.west |- cf.south)+(180:#1)$)
+    
+    ($(cf.west |- 1010.north)+(90:#1)$) -| ($(1010.west |- rf.north)+(180:#1)$) [sharp corners] ($(cf.west |- 1010.north)+(90:#1)$) |- ($(1010.west |- rf.north)+(180:#1)$);
+}
+
+% Empty Karnaugh map 4x4
+\newenvironment{Karnaugh4}[4] {
+    \begin{tikzpicture}[baseline=(current bounding box.north),scale=0.8]
+        \draw (0,0) grid (4,4);
+        \draw (0,4) -- node [pos=0.7,above right,anchor=south west] {#1#2}
+            node [pos=0.7,below left,anchor=north east] {#3#4} ++(135:1);
+        \matrix (mapa) [
+            matrix of nodes,
+            column sep={0.8cm,between origins},
+            row sep={0.8cm,between origins},
+            every node/.style={minimum size=0.3mm},
+            anchor=0010.center,
+            ampersand replacement=\&
+        ] at (0.5,0.5) {
+                       \& |(c00)|  00 \& |(c01)|  01 \& |(c11)|  11 \& |(c10)|  10 \& |(cf)| \pp \\
+            |(r00)| 00 \& |(0000)| \p \& |(0100)| \p \& |(1100)| \p \& |(1000)| \p \& \\
+            |(r01)| 01 \& |(0001)| \p \& |(0101)| \p \& |(1101)| \p \& |(1001)| \p \& \\
+            |(r11)| 11 \& |(0011)| \p \& |(0111)| \p \& |(1111)| \p \& |(1011)| \p \& \\
+            |(r10)| 10 \& |(0010)| \p \& |(0110)| \p \& |(1110)| \p \& |(1010)| \p \& \\
+            |(rf)| \pp \& \& \& \& \& \\
+        };
+}
+{\end{tikzpicture}}
+
+% Empty Karnaugh map 2x4
+\newenvironment{Karnaugh3}[3] {
+    \begin{tikzpicture}[baseline=(current bounding box.north),scale=0.8]
+        \draw (0,0) grid (4,2);
+        \draw (0,2) -- node [pos=0.7,above right,anchor=south west] {#1#2}
+            node [pos=0.7,below left,anchor=north east] {#3} ++(135:1);
+        \matrix (mapa) [
+            matrix of nodes,
+            column sep={0.8cm,between origins},
+            row sep={0.8cm,between origins},
+            every node/.style={minimum size=0.3mm},
+            anchor=001.center,
+            ampersand replacement=\&
+        ] at (0.5,0.5) {
+                      \& |(c00)| 00 \& |(c01)| 01 \& |(c11)| 11 \& |(c10)| 10 \& |(cf)| \pp \\
+            |(r00)| 0 \& |(000)| \p \& |(010)| \p \& |(110)| \p \& |(100)| \p \& \\
+            |(r01)| 1 \& |(001)| \p \& |(011)| \p \& |(111)| \p \& |(101)| \p \& \\
+            |(rf)| \pp \& \& \& \& \& \\
+        };
+}
+{\end{tikzpicture}}
+
+% Empty Karnaugh map 2x2
+\newenvironment{Karnaugh2}[2] {
+    \begin{tikzpicture}[baseline=(current bounding box.north),scale=0.8]
+        \draw (0,0) grid (2,2);
+        \draw (0,2) -- node [pos=0.7,above right,anchor=south west] {#1}
+            node [pos=0.7,below left,anchor=north east] {#2} ++(135:1);
+        \matrix (mapa) [
+            matrix of nodes,
+            column sep={0.8cm,between origins},
+            row sep={0.8cm,between origins},
+            every node/.style={minimum size=0.3mm},
+            anchor=01.center,
+            ampersand replacement=\&
+        ] at (0.5,0.5) {
+                      \& |(c00)| 0 \& |(c01)| 1 \\
+            |(r00)| 0 \& |(00)| \p \& |(10)| \p \\
+            |(r01)| 1 \& |(01)| \p \& |(11)| \p \\
+        };
+}
+{\end{tikzpicture}}
+
+% Places 1s in listed positions
+\newcommand{\ones}[1] {
+    \foreach \x in {#1}
+        \path (\x) node {1};
+}
+
+% Places 0s in listed positions
+\newcommand{\zeroes}[1] {
+    \foreach \x in {#1}
+        \path (\x) node {0};
+}
+
+% Places Xs in listed positions
+\newcommand{\exes}[1] {
+    \foreach \x in {#1}
+        \path (\x) node {X};
+}
+
+% Examples (Uncomment document type & packages at the top of the file too)
+
+% \begin{document}
+%     \begin{Karnaugh4}{a}{b}{c}{d}
+%         \zeroes{0000,0001,0010,0011,0100,0101,0110,0111,
+%             1000,1001,1010,1011,1100,1101,1110,1111}
+%         \internal{0000}{1000}{red}
+%         \internal{0101}{1111}{purple}
+%         \vertical[3pt]{1100}{1010}{blue}
+%         \corners[2pt]{orange}
+%         \horizontal{0001}{1011}{green}
+%     \end{Karnaugh4}
+    
+%     \begin{Karnaugh3}{X}{Y}{Z}
+%         \ones{110,001}
+%         \zeroes{000,010,111,101}
+%         \exes{100,011}
+%         \internal{110}{100}{green}
+%         \internal{001}{011}{}
+%     \end{Karnaugh3}
+
+%     \begin{Karnaugh2}{I}{J}
+%         \ones{10,01}
+%         \zeroes{00,11}
+%         \isolated{10}{green}
+%         \isolated{01}{red}
+%     \end{Karnaugh2}
+% \end{document}
