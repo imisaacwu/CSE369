@@ -13,6 +13,7 @@ vsim.wlf
 *.qws
 *.sdc
 *.srf
+*.bak
 
 # OS X finder files
 .DS_Store
