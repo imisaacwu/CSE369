@@ -9,9 +9,7 @@ work/
 c5_pin_model_dump.txt
 transcript
 vsim.wlf
-*.qsf
 *.qws
-*.sdc
 *.srf
 *.bak
 
