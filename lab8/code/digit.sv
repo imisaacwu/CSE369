@@ -1,17 +1,14 @@
 // Digit display module
 module digit (clk, in, reset, hex, cout);
 	input logic clk, reset;
-	input logic [3:0] in;
+	input logic [2:0] in;
 	output logic [6:0] hex;
 	output logic cout;
 	
 	logic [3:0] count = 4'b0000;
-	logic [3:0] buffer;
-	
-	addN #(4) adder (.A(count), .B(in), .S(buffer), .C(cout));
 
 	always_comb begin
-		case(count)
+		case (count)
 			4'b0000: hex = 7'b1000000;
 			4'b0001: hex = 7'b1111001;
 			4'b0010: hex = 7'b0100100;
@@ -26,8 +23,13 @@ module digit (clk, in, reset, hex, cout);
 		endcase
 	end
 	
+	assign cout = ((count + in) > 4'b1001);
+		
 	always_ff @(posedge clk) begin
 		if (reset) count <= 4'b0000;
-		else count <= buffer;
+		else if (in > 3'b000) begin
+			if ((count + in) > 4'b1001) count <= (count + in) - 4'b1010;
+			else count <= count + in;
+		end
 	end
 endmodule	// digit
