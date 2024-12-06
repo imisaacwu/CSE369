@@ -1,35 +1,23 @@
-// Digit display module
-module digit (clk, in, reset, hex, cout);
-	input logic clk, reset;
-	input logic [2:0] in;
-	output logic [6:0] hex;
-	output logic cout;
+module digit (curr, in, reset, out, carry_out);
+	input logic reset;
+	input logic [3:0] curr; // {0, 1, ... 9}
+	input logic [4:0] in;	// {-8, -6, -4, -2, 0, 1, 2, 3, 4, 5, 6, 7, 8}
+	output logic [3:0] out;	// {0, 1, ... 9}
+	output logic [1:0] carry_out; // {-1, 0, 1}
 	
-	logic [3:0] count = 4'b0000;
-
+	logic [5:0] buffer;	// {-8, ... 17}
 	always_comb begin
-		case (count)
-			4'b0000: hex = 7'b1000000;
-			4'b0001: hex = 7'b1111001;
-			4'b0010: hex = 7'b0100100;
-			4'b0011: hex = 7'b0110000;
-			4'b0100: hex = 7'b0011001;
-			4'b0101: hex = 7'b0010010;
-			4'b0110: hex = 7'b0000010;
-			4'b0111: hex = 7'b1111000;
-			4'b1000: hex = 7'b0000000;
-			4'b1001: hex = 7'b0010000;
-			default: hex = 7'bX;
-		endcase
-	end
-	
-	assign cout = ((count + in) > 4'b1001);
-		
-	always_ff @(posedge clk) begin
-		if (reset) count <= 4'b0000;
-		else if (in > 3'b000) begin
-			if ((count + in) > 4'b1001) count <= (count + in) - 4'b1010;
-			else count <= count + in;
+		buffer = curr + {in[4], in};
+		if (buffer[5]) begin
+			out = buffer + 6'b001010;
+			carry_out = -1;
+		end else if (buffer > 9) begin
+			{buffer[5], out} = buffer - 10;
+			carry_out = 1;
+		end else begin
+			out = buffer;
+			carry_out = 0;
 		end
 	end
-endmodule	// digit
+
+endmodule

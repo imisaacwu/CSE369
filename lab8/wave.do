@@ -1,16 +1,18 @@
 onerror {resume}
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /cyber_war_tb/clk
-add wave -noupdate {/cyber_war_tb/SW[9]}
-add wave -noupdate /cyber_war_tb/SW
-add wave -noupdate {/cyber_war_tb/KEY[3]}
-add wave -noupdate {/cyber_war_tb/KEY[0]}
-add wave -noupdate /cyber_war_tb/L
-add wave -noupdate /cyber_war_tb/LEDR
-add wave -noupdate /cyber_war_tb/HEX0
-add wave -noupdate /cyber_war_tb/HEX5
+add wave -noupdate /DDR_tb/clk
+add wave -noupdate /DDR_tb/KEY
+add wave -noupdate {/DDR_tb/SW[0]}
+add wave -noupdate -radix hexadecimal /DDR_tb/red
+add wave -noupdate -radix hexadecimal /DDR_tb/grn
+add wave -noupdate /DDR_tb/HEX0
+add wave -noupdate /DDR_tb/HEX1
+add wave -noupdate /DDR_tb/HEX2
+add wave -noupdate /DDR_tb/HEX3
+add wave -noupdate /DDR_tb/HEX4
+add wave -noupdate /DDR_tb/HEX5
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {3507 ps} 0}
+WaveRestoreCursors {{Cursor 1} {51 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 150
 configure wave -valuecolwidth 100
@@ -26,4 +28,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {3358 ps} {4718 ps}
+WaveRestoreZoom {0 ps} {1299 ps}

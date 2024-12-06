@@ -1,4 +1,4 @@
-set_global_assignment -name TOP_LEVEL_ENTITY DE1_SoC
+set_global_assignment -name TOP_LEVEL_ENTITY DDR
 # -------------------------------------------------------------------------- #
 #
 # Copyright (C) 2017  Intel Corporation. All rights reserved.
@@ -300,9 +300,18 @@ set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name STATE_MACHINE_PROCESSING "USER-ENCODED"
 set_global_assignment -name CDF_FILE ProgramTheDE1_SoC.cdf
 set_global_assignment -name SYSTEMVERILOG_FILE code/clock_divider.sv
-set_global_assignment -name SYSTEMVERILOG_FILE code/DE1_SoC.sv
-set_global_assignment -name SYSTEMVERILOG_FILE code/LED_test.sv
 set_global_assignment -name SYSTEMVERILOG_FILE code/LEDDriver.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/digit.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/track.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/track_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../lab7/code/lfsr.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/transpose.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/point_adder.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/point_adder_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/digit_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/digit_display.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/digit_display_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/DDR.sv
 set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
@@ -674,10 +683,6 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_R[6]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_R[7]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_SYNC_N
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to VGA_VS
-set_global_assignment -name SYSTEMVERILOG_FILE code/digit.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../lab7/code/edge_detector.sv
-set_global_assignment -name SYSTEMVERILOG_FILE code/track.sv
-set_global_assignment -name SYSTEMVERILOG_FILE code/track_tb.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../lab7/code/lfsr.sv
-set_global_assignment -name SYSTEMVERILOG_FILE code/transpose.sv
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SYSTEMVERILOG_FILE code/transpose_tb.sv
+set_global_assignment -name SYSTEMVERILOG_FILE code/DDR_tb.sv
